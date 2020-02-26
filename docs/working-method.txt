@@ -1,1 +1,117 @@
+Parser {
+	switch read keyword {
+	case type:
+		check if type exists
+		if yes {
+			error "Type undefined"
+		}
+		else {
+			do nothing
+		}
+			
+		get identifier
+		check whether identifier is already defined in current block
+		if yes {
+			error "Identifier redefined"
+		}
+		else {
+			do nothing
+		}
+		check if it is a function or function pointer
+		if yes { 
+			if first {
+				create function branch
+			}
+			else {
+				create pointer type branch 
+			}
+		}
+		else {
+			create a type branch
+		}
+		read attributes
+		parse attributes
 
+	case identifier:
+		if syntax behavior == standard_c {
+			 /* Behavior of C
+			  * In C, no operation can be done on raw identifier, even comptime */ 
+			check whether identifier is in the global scope
+			if yes {
+				error "Invalid behavior; you cannot operate on global data unless it is an initialization"
+			}
+			else {
+				do nothing
+			}
+		}
+		elif syntax behavior == c_asterisk {
+			/* Behavior of C*
+			 * In C*, if global variable was once defined in the source file, 
+			 * it can be initialized or reinitialized in later statements
+			 * Final value will be computed in compile time */
+
+			do nothing
+		}
+		else {
+			...
+		}
+
+		check whether identifier is valid
+		if yes {
+			do nothing
+		}
+		else {
+			error "Identifier is not yet defined"
+		}
+
+		operator = get operator
+		if operator is single argument {
+			check whether it is possible to do such operation on this variable
+			if yes {
+				do nothing
+			}
+			else {
+				error "Cannot do such operation on this variable"
+			}
+		}
+		elif operator is in conditional operators {
+			check whether it is possible to do such operation on this variable
+			...
+
+			get right argument
+			check whether right argument is a valid identifier or constant
+			if yes {
+				do nothing
+			}
+			else {
+				error "Invalid rval identifier or constant"
+			}
+			create conditional branch
+		}
+		elif operator is in modifying operators {
+			check whether it is possible to do such operation on this variable
+			...
+
+			get right argument
+			check whether right argument is a valid identifier or constant
+			if yes {
+				do nothing
+			}
+			else {
+				error "Invalid rval identifier or constant"
+			}
+			create modyfing branch
+		}
+
+	case single operator:
+		if syntax behavior == c_asterisk {
+			do nothing
+		}
+		else {
+			error "Invalid behavior; you cannot operate on global data unless it is an initialization"
+		}
+		do an action of 'case identifier' + action of this operator
+
+
+	}
+}

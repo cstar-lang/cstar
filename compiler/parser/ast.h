@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2020 Grzegorz Kociołek (Dark565)
+ *
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #ifndef __AST_H__
 #define __AST_H__
 
@@ -23,7 +40,7 @@ enum ast_value {
 	CA_VAL_INTEGER,		// 123i, 123
 	CA_VAL_UINTEGER,	// 123u, 123
 	CA_VAL_FLOAT,		// 123.f, 123.0
-	CA_VAL_ENUM,		// CA_ENUM
+	CA_VAL_ENUM,		// CA_VAL_ENUM
 	CA_VAL_OBJECT		// tree
 };
 
@@ -71,14 +88,18 @@ enum ast_modifying_operators {
 
 /* Operators extended by C*. There are no such operators in raw C */
 enum ast_additional_operators {
-	CA_MOD_WRAPPING_ADDITION,		// +%i, for example j +% 1024.
+	CA_MOD_COMPLETE_TO_DIVISIBLE,		// +%i, for example j +% 1024.
 						// operation is equal to `j + 1024 - (j % 1024)`
 				
-	CA_MOD_WRAPPING_SUBSTRACTION, 		// -%i, for example j -% 1024;
+	CA_MOD_SUBTRACT_TO_DIVISIBLE, 		// -%i, for example j -% 1024;
 						// operation is equal to `j - (j % 1024)`
 				
-	CA_MOD_WRAPPING_ADDITION_SET,		// +%=
-	CA_MOD_WRAPPING_SUBSTRACTION_SET,	// -%=
+	CA_MOD_COMPLETE_TO_DIVISIBLE_SET,	// +%=
+	CA_MOD_SUBTRACT_TO_DIVISIBLE_SET,	// -%=
+	CA_MOD_ROL,				// <|<
+	CA_MOD_ROR,				// >|>
+	CA_MOD_ROL_SET,				// <|<=
+	CA_MOD_ROR_SET,				// >|>=
 };
 
 enum ast_keywords {
@@ -95,24 +116,56 @@ enum ast_keywords {
 	CA_KWORD_ENUM,
 };
 
-struct ast {
+
+/* Preprocessor keywords */
+enum ca_preproc_keywords {
+	CA_PREPROC_KWORD_DEFINE = 1,
+	CA_PREPROC_KWORD_IF,
+	CA_PREPROC_KWORD_IFDEF,
+	CA_PREPROC_KWORD_IFNDEF,
+	CA_PREPROC_KWORD_DEFINED,
+	CA_PREPROC_KWORD_UNDEF,
+	CA_PREPROC_KWORD_INCLUDE,
+}
+
+enum ast_flags {
+	CA_AST_COMPATIBILITY_MODE,	// C* parser works just as C parses; C* extended code is an error
+};
+
+struct ca_object_info {
+	int type;
+	const char *name;
+};
+
+struct ca_ast {
 	int flags;
 	void *data;
 };
 
+
 /*
  * Create a new Abstract Syntax Tree with specified flags
  */
-int create_ast(struct ast **tree, int flags);
+int ca_create_ast(struct ast **tree, int flags);
 /*
- * Update an Abstact Syntax Tree of the current C* code
+ * Parse the C* code and update the abstract syntax tree
  * If tree is NULL, then new AST with default flags is created
  */
-int update_ast(struct ast *tree, const char *code);
+int ca_update_ast(struct ast *tree, const char *code);
 /*
  * Free AST from the memory
  */
-void free_ast(struct ast *tree);
+void ca_free_ast(struct ast *tree);
+/*
+ * Scan a word and get a identifier
+ */
+void ca_get_obj_type(struct ast_object_info *obj, const char *word);
+/*
+ * Scan a word and get a pragma type or 0 if no type was found
+ * String must not have any prefix
+ */
+int ca_get_pragma_type(const char *word);
+
 
 
 #endif /* __AST_H__ */;

@@ -4,7 +4,7 @@
 #define PREPROC_SIGN '#'
 
 /* Preprocessor keywords */
-enum preproc_keywords {
+enum ca_preproc_keywords {
 	PREPROC_KWORD_DEFINE,
 	PREPROC_KWORD_IF,
 	PREPROC_KWORD_IFDEF,
