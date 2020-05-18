@@ -46,7 +46,7 @@ float geo_avg(void)
 }
 ```
 
-Such expansions like above was created to shorten writing mathematical operations like above. 
+Such expansions like above were created to shorten writing mathematical operations like above. 
 If you think, that it isn't well-readable, don't worry, because it is easy to get use to it and this language was created to be practical and efficient, not cute :-).  
 It is exactly the same to what bash does, so if you are familiar with it you know how it goes.  
 More info about expansions is in **expansions.md**.
