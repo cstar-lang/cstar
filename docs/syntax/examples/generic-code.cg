@@ -1,0 +1,49 @@
+// Example code using C* generic concept (defined in generics.cg)
+
+@use std.string;
+@use std.list;
+
+@generic(type T)
+{
+	struct my_list {
+		<T>.list ls;
+
+		bool add_to_list(const T& obj) {
+			if (T == float) obj += 3.14159f;
+			return ls.push(obj);
+		}
+
+		// Import the function instead of defining it here
+		void checksum();
+	};
+
+<setup>	
+	if (T == int) {
+		@error("'int' cannot be used as a generic type for my_list");
+	}
+}
+
+// It will import <>.my_list of generic types float, char and long long from the object file, instead of
+// defining it ownself.
+@import @exp(<{...}>.my_list, float, char, long long).*;
+// or also @exp but more directly
+@import <${float, char, long long}>.my_list.*;
+
+// Experimental syntax of import:
+@import <float|char|long long>.my_list.*;
+// It is just experimental, first and second line will work always.
+
+main() {
+
+	<int>.my_list	cool_list1; // Error; will show the message given in <setup> section of @generic and stop compilation
+	<float>.my list	cool_list2; // Ok
+	<char>.my_list 	cool_list3; // Ok
+
+	cool_list2.add_to_list(2.71828f); 	// Will add PI to the Euler number and add it to list, because it's float
+	cool_list3.add_to_list(128);		// Will add 128 to the list as is
+}
+
+// As you can see, <> is similar to C++ and it doesn't matter.
+// I don't want to create a C variation completely different from C++ under threat of being shot ;-),
+// I just want to create a C extension which will be subjectively nicely done and will fix errors of C++.
+// Any similarities are possible, because there are things I think that are good.

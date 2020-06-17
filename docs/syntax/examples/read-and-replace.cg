@@ -1,0 +1,59 @@
+@use std.string;
+@use std.streams;
+@use std.fs;
+@use std.list;
+@use std.argv; // argv is a typeref to std.<char*>.list
+
+// C* supports four types of main's argument construction:
+// > main(int argc, char **argv),
+// > main(const std.argv& args),
+// > main(void)
+// > main()
+// Return type is optional in each of them and it is int (as in every other function)
+// Return type of main can be void and then when a program exits by returning from main,
+// it exits with status 0.
+main(const std.argv& args)
+{
+	if (args.len() < 2) std.error("{} arguments is not enough.", args.len());
+
+	std.fs.file docf;
+	docs.open(args.at(1), FS_READ).?;
+
+	// C* uses the unwrap mechanism for error handling instead of C++'s try-catch, so
+	// whenever you get an std.option structure, you have to unwrap it with
+	// the unwrap() function or the special ? shortcut.
+	// This is borrowed from the Rust language.
+	// You can also set the C* to automatically unwrap those structures
+	// with a line:
+	// @attribute("auto-unwrap",on)
+	// More about @attribute in 'docs/attribute.md'
+
+	u32 line = 0;
+
+	while (std.string line = docf.getline()) {
+		// Variables can be created in while's (and other constructions') condition field !!
+		// Such variables belongs locally to the block of such construction;
+		line++;
+
+		if (line =~ "i/^dog: {0,16}shiba inu/") {
+			// Here is the thing for which I fight the most, precompiled regexes!
+			// The C* compiler will compile the above regex to machine code and comparing of the 'line'
+			// and regex will be done without any useless runtime compilation.
+			// 'i' before '/' means that this regex is case insensitive.
+
+			std.print("Shiba inu was detected on line: {}\n", line);
+
+			docf.open(args.on(1), FS_WRITE|FS_APPEND).?; 	// Opening the same file object once again, closes the
+									// previous object. Logical.
+			docf.print("SHIBE IS THE KING OF DOGS\n").?;
+			return 0; 
+
+			 // We don't have to worry about closing docf, because as befits a real object
+			 // oriented language, its destructor will be called while returning out of
+			 // the block it is in.
+		}
+	}
+
+	return 1;
+}
+

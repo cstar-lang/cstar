@@ -11,46 +11,18 @@ C++ is not bad, but has some problems I want to fix.
 For example, if you use functions from one template class in two .cpp files, then C++ compiler will compile those functions twice for each source file.  
 At least, at the end linker will remove duplicates while linking everything to an output, but that doesn't solve the problem of wasted time of compiling the same things.
 
-## How do I want to solve above problem?
-C\* compiler will have a flag to parse each object or source file and basing on parsed data define each inclusive  
-template function in one global object file named wanted.o for default.  
-Finally the linker links wanted.o and each other .o file and then creates final executable file.
-
-C\* will also have a non-flag method to solve this problem. Each template class or single function will be able  
-to be defined in one source file. There will be a keyword: 'export' and it will export each class method or  
-single function.  
-It is an example:
-```cg
-#include "class.hg"
-
-export foo::class<int>::*
-```
-To tell a compiler to import class methods or single functions instead of create new static, there will be a  
-keyword 'import'. For example:
-```cg
-#include "class.hg"
-
-import foo:class<int>::*
-```
-'import' is backward compatible with 'extern', but not vice versa.  
-You cannot use 'extern' to express code above.
-
 ## Compatibility
 C\* is fully back-compatible with C11 and partially with C++11, so you can compile C code using C\* compiler as well.
 
-To be able to extern C++ functions, one has to write: `extern "C++" { ... }`.  
-There is no such need for C, because it is natural for C\* - uses the same mangling and conventions.  
-But you can do that and it will be even recommended for blocks of code written entirely in C, because then compiler will be able to greatly optimize its work.  
-Especially if you compile through C backend.
+To be able to extern C++ functions, you have to write: `extern "C++" { ... }`.  
+And to extern C functions `extern "C" { ... }`.
 
 ## Symbol mangling
-But what with mangling, because it is inevitable when you implement classes and methods?
-
-Yeah. That's right. Default mangling for classes is `::` and for namespaces `.`.  
-But it is changeable.
+C* uses defaultly its own mangling defined in [docs/mangling.md](docs/mangling.md), but you can easily change it to that C++'s or the own one.
 
 ## File extensions
-Language uses .cg for code definition and .hg for declaration.  
+Language uses .cg (source) for code definition and .hg (headers) for declaration.  
+But in most cases headers are useless, because C\* uses a concept of modules.  
 .cg is an acronym of C-Glob. Optonal name of the language.  
 It is not .cs (from C-Star), because .cs is already occupied by C#.
 
@@ -66,23 +38,26 @@ It is not .cs (from C-Star), because .cs is already occupied by C#.
 - As a love letter from me to Bash, Perl and other scripting languages, the language features a lot of glob extensions which are intended to ease a programmer's job. 
 
 ## Compiler
-Basic C\* compiler is written in Perl.
+Basic C\* compiler is written in D.
 
 I don't want to create a giant like gcc or clang. Just a simple compiler.
 
 Code of C\* is compiled directly to ELF binary, because of speed.  
 Optional method is compiling to NASM, GAS or C and then to binary
 
-Only supported architecture now for direct compiling (each except through C) is x86_64 and i*86.  
+Only supported architecture now for direct compiling (each except through C) is x86_64 and i386.  
 It is possible that in the future more architectures will be supported.
+
+## More info
+Will be added soon.
 
 ## Building
 See [building.md](building.md).
 
 ## What if you want to involve in the project?
-Then great! I will be really thankful if anyone would like to help me with this project.  
-If you know Perl and know how computer languages work then you're welcome :-).  
-Check out the coding style, make friends with the code and you can act.  
+That's great! I will be really thankful if anyone would like to help me with this project.  
+If you know D and know how computer languages work then you're welcome :-).  
+Check out the coding style, make friendship with the code and you can act.  
 I accept changes as pull requests.
 
 ## License

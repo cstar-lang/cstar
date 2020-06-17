@@ -4,7 +4,7 @@ As you could see in structs.md, C\* has something called as **expansions**.
 It is a powerful tool allowing to short the LOC count by writing a simple evaluation.
 
 ## Syntax
-Expansions may only be written in special brackets: **<** and **>**.  
+Expansions may only be written in special brackets: **${** and **}**.  
 In these brackets, there is a place for a pattern.  
 Pattern is bash-like, so we can define following syntax:
 

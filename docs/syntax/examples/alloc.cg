@@ -1,0 +1,89 @@
+use std.memory;
+use std.allocator;
+use std.string;
+use std.argv;
+use std.random;
+use std.fs;
+
+main(const std.argv& args)
+{
+	if (args.len() < 2) std.error("Not enough arguments!");
+
+	std.string num_str = args.at(1);
+
+	u16 bytes_count = match (num_str.sscanf("count: {}")) {
+		.status(1) => .result;
+		.status(0) => std.error("Invalid count specified: {}", .error);
+	}
+
+	// Example of 'match' for error handling.
+	// C's 'switch' cannot be used, because it can't take attributes of
+	// a structure.
+	// Match is its extended brother with a lot of features and I prefer to use it for everything in C*.
+	
+	if (bytes_count > 1024) std.error("Error: too many characters requested.");
+
+	u8 * bytes = std.allocator.heap.alloc(bytes_count).?;
+
+	// This will allocate memory equal to 'bytes_count' bytes on the heap
+	// That allocator has a reference to short calling it:
+	// > std.heap_allocator
+	// And allocator's .alloc also has a short:
+	// > std.heap_alloc
+	// Use it as you want.
+	// Exact description how allocators work are in `docs/allocation.md`
+	
+	long * lbytes = (long *)bytes;
+	u16 lcount = bytes_count / sizeof(long);
+
+	for (long * lbyte, &lbytes[0..lcount-1]) {
+		*lbyte = std.linux.urandom();
+	}
+
+	u16 mcount = bytes_count % sizeof(long);
+
+	for (char * byte, &bytes[bytes_count-mcount..bytes_count-1]) {
+		*byte = (char)std.linux.urandom();
+	}
+
+	// Here is shown a new available construction for 'for'.
+	// for (x, ...)
+	// On each iteration 'x' gets a value of one variable in a ... argument list,
+	// then that list is shifted.
+	// Main reason for that syntax is to use it in pseudo-evaluated argument lists like
+	// for (int i, 1..10)
+	// Here C* compiler will replace that for into
+	// for (int i = 0; i <= 10; i++)
+	// The first argument (iterator) is optional and isn't required.
+	// The compiler will use _ for the iterator variable (like in Perl).
+	// Whether this syntax will support non-linear lists like:
+	// 3,5,2,6,2,7,4,5 is a matter of dispute.
+	// At the moment, linear lists are obvious.
+	
+	std.fs.file rand_file;
+	rand_file.open(std.string::format("random-file-{}", args.at(1)).?, FS_WRITE|FS_CREAT|FS_EXCL).?;
+
+	rand_file.write("{r[&2]}", bytes, bytes_count).?;
+
+	// Fast explanation of that string
+	// {} is obviously a mark saying to print an object from an argument list
+	// r[] says to treat an argument as an array of raw data not a regular pointer (when it is just a regular pointer, only address is printed)
+	// &2 means that size of that array is in the first argument (after the format)
+	
+	// And that is how raw data can be printed in C*.
+	// You don't need any raw_write function or anything.
+	// Just regular write.
+	// And the most important, all the printing will be done directly in the runtime without any useless
+	// parsing like C's printf would do.
+	
+	std.memory.free(bytes);
+
+	// In the end of program execution, free-ing dynamic bytes isn't required, but if you want Valgrind to
+	// like you do it.
+	// PS.
+	// C* has structures which allow to protect the memory, share it and finally free if all references
+	// are closed, but they are not discussed here.
+
+	return 0;
+}
+

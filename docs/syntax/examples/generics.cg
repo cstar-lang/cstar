@@ -1,0 +1,83 @@
+// This file presents how generics in C* look like
+
+////////////////////////////////////////////
+//// GENERIC FUNCTIONS AND CALLING THEM ////
+
+@generic(size_t S)
+{
+	size_t some_foo(int x) {
+		return (x + (S == 65 ? 1 : S)) * 32;
+	}
+}
+
+// The function declaration can also be written as:
+
+@generic(size_t S) size_t some_foo(int x) {...}
+
+// Block construction is useful when you declare a lot of generic functions and don't want to include the same
+// header
+
+// The above function can be called this way:
+<32>.some_foo(43);
+
+// or in C++' way:
+some_foo<32>(43);
+
+// Coming back to blocks, they can be stacked:
+@generic(type T)
+{
+	T some_bar(T x, T, y) {...}
+
+	@generic(size_t S) T some_bar2(T x) {...}
+}
+
+// Arguments of nested generics are added to a parent argument list, so to call some_bar2, you have to e.g:
+<int, 54>.some_bar2(0xfee1dead);
+
+// or
+some_bar2<int, 54>(0xfee1dead);
+
+// both are valid.
+// I recommend the first method for everything in C*, but if you want you can use second for classes and structures
+// and I won't be mad, but keep in mind that this syntax stayed here only for some compatibility with C++.
+// If you use that syntax and function is a method and that method is generic, then you can do something like this:
+
+funny_struct<int>::<char>.foo();
+
+// or you can
+
+<int>.funny_struct::<char>.foo();
+
+// ^ This method is logical, because it treats the generic extension as an object,
+// and practically it is. Each generic type has its own structure fitted for that type.
+
+////////////////////////////////////////////
+//////////////// MANGLING //////////////////
+
+// In C*, defaultly, symbols are exported with human readability, optimality and space saving in mind. So
+// for example:
+
+<int, int>.process(int, int)
+// of generic:
+@generic(type A, type B) A process(B x, B y) { ... }
+// will be exported as
+cg:<t_i32,t_i32>.process(+2,+2)->+1
+
+
+<f32, 32>.foo(f32, i32)
+// of
+@generic(type T, size_t S) T foo(T x, i32 y) { ... }
+// is
+cg:<t_f32,s_32>.foo(+1,t_i32)->+1
+
+
+<i64, 3.14159, 10>.foo(i64, i64, i8)
+// of
+@generic(type T, f32 F, size_t S) i8 bar(T x, T y, i8 z) { ... }
+// is
+cg:<t_i64,f_3.14159,s_10>.bar(+1,+1,t_i8)->t_i8
+
+// It may look very complicated, but it isn't. It suffices to know what means that construction and you can easily decode
+// the full name of a function from this.
+// Full documentation of mangling is in file mangling.cg
+// C* compiler supports also C++' mangling for the compatibility

@@ -1,0 +1,61 @@
+@use string; // Tells the compiler to use module 'string'
+
+@type string is string<8>;	 	// Makes that, in the generic context string<*>, string<8> is default
+					// string<8> is default in the language anyway, but this line in shown here as an example
+
+// While reading the above line you could think about C's typedef.
+// Using 'typedef' for that is dispute resolution.
+// I don't plan to allow doing it with the 'typedef' to not mix styles.
+// I recommend to use @type for everything in C*.
+
+
+int main()
+{
+	string 		str_utf8 = "UTF-8 string: zażółć gęślą jaźń";
+	string<16> 	str_utf16 = str_utf8; 				// Conversion between utf-8 and utf-16 will happen here
+
+	//string<16>	str_utf16 = string<16>::from(str_utf8); 	// Will do the same thing that above
+
+	string<16>	str_utf16_2 = "UTF-16 string!"			// Will create utf-16 string
+
+	// Note: It wouldn't be optimal if that string had to receive an UTF-8 static string in the constructor (or = operator), instead of precompiled UTF-16 string.
+	// 	 To resolve that, the compiler has the special syntax for static strings to set their encoding, for example:
+
+	const char * static_string = `utf-16` "Hello, world";
+
+	// or before the identifier to set the default encoding of static string for that pointer:
+
+	const char * `utf-16` static_string;
+
+	// you can use that in function arguments:
+
+	void sth(const char * `utf-16` arg_str);
+
+	// And then calling that with:
+
+	sth("Hello, world!");
+
+	// will pass an UTF-16 static string to the function
+	
+	// Similarly the constructor of string<16> is made.
+	// It forces UTF-16 encoding on the default constructor.
+	
+	// Of course you can cheat it and pass an invalid UTF-16 string to the constructor doing for example:
+	
+	const char * static_a = "ABCDE";
+	const char * `utf-16` static_b = static_a;
+
+	// But here you would receive a warning, because you are trying to assign the default UTF-8 string address
+	// to UTF-16 string pointer, but you can avoid this with:                                             							
+	
+	const char * `utf-16` static_b = `utf-16` static_a;
+
+	// This will tell the compiler that is definitively utf-16 string and the compiler will be quiet.
+
+	string<16> dynamic_a = static_b;
+
+	// That ""cheating"" is necessary in some circumstances and you are free to do that. It's not Rust ;-)
+	
+
+
+}

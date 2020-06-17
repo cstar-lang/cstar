@@ -1,0 +1,44 @@
+use std.memory;
+use std.allocator;
+use std.string;
+use std.argv;
+use std.random;
+use std.fs;
+
+main(const std.argv& args)
+{
+	if (args.len() < 2) std.error("Not enough arguments!");
+
+	std.string num_str = args.at(1);
+
+	u16 bytes_count = match (num_str.sscanf("count: {}")) {
+		.status(1) => .result;
+		.status(0) => std.error("Invalid count specified: {}", .error);
+	}
+	
+	if (bytes_count > 1024) std.error("Error: too many characters requested.");
+
+	u8 * bytes = std.allocator.heap.alloc(bytes_count).?;
+	
+	long * lbytes = (long *)bytes;
+	u16 lcount = bytes_count / sizeof(long);
+
+	for (long * lbyte, &lbytes[0..lcount-1]) {
+		*lbyte = std.linux.urandom();
+	}
+
+	u16 mcount = bytes_count % sizeof(long);
+
+	for (char * byte, &bytes[bytes_count-mcount..bytes_count-1]) {
+		*byte = (char)std.linux.urandom();
+	}
+	
+	std.fs.file rand_file;
+	rand_file.open(std.string::format("random-file-{}", args.at(1)), FS_WRITE|FS_CREAT|FS_EXCL).?;
+
+	rand_file.write("{r[&2]}", bytes, bytes_count).?;
+	
+	std.memory.free(bytes);
+
+	return 0;
+}
