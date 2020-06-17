@@ -1,8 +1,8 @@
-@use std.string;
-@use std.streams;
-@use std.fs;
-@use std.list;
-@use std.argv; // argv is a typeref to std.<char*>.list
+use std.string;
+use std.streams;
+use std.fs;
+use std.list;
+use std.argv; // argv is a typeref to std.<char*>.list
 
 // C* supports four types of main's argument construction:
 // > main(int argc, char **argv),

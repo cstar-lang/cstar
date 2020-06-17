@@ -1,7 +1,7 @@
 // Example code using C* generic concept (defined in generics.cg)
 
-@use std.string;
-@use std.list;
+use std.string;
+use std.list;
 
 @generic(type T)
 {
@@ -25,12 +25,12 @@
 
 // It will import <>.my_list of generic types float, char and long long from the object file, instead of
 // defining it ownself.
-@import @exp(<{...}>.my_list, float, char, long long).*;
+import @exp(<{...}>.my_list, float, char, long long).*;
 // or also @exp but more directly
-@import <${float, char, long long}>.my_list.*;
+import <${float, char, long long}>.my_list.*;
 
 // Experimental syntax of import:
-@import <float|char|long long>.my_list.*;
+import <float|char|long long>.my_list.*;
 // It is just experimental, first and second line will work always.
 
 main() {

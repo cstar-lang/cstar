@@ -1,12 +1,12 @@
-@use string; // Tells the compiler to use module 'string'
+use string; // Tells the compiler to use module 'string'
 
-@type string is string<8>;	 	// Makes that, in the generic context string<*>, string<8> is default
+type string is string<8>;	 	// Makes that, in the generic context string<*>, string<8> is default
 					// string<8> is default in the language anyway, but this line in shown here as an example
 
 // While reading the above line you could think about C's typedef.
 // Using 'typedef' for that is dispute resolution.
 // I don't plan to allow doing it with the 'typedef' to not mix styles.
-// I recommend to use @type for everything in C*.
+// I recommend to use type for everything in C*.
 
 
 int main()
