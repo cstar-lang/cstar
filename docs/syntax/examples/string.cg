@@ -18,44 +18,42 @@ int main()
 
 	string<16>	str_utf16_2 = "UTF-16 string!"			// Will create utf-16 string
 
-	// Note: It wouldn't be optimal if that string had to receive an UTF-8 static string in the constructor (or = operator), instead of precompiled UTF-16 string.
-	// 	 To resolve that, the compiler has the special syntax for static strings to set their encoding, for example:
+	// The compiler will create the UTF-16 variation of this string, pack it to the .text section and
+	// this variable will point to that data.
+	//
+	const wchar * static_string_16 = "Hello, world";
 
-	const char * static_string = `utf-16` "Hello, world";
+	// Will do the same that above, but this allows you to assign an UTF-16 static string to the char *
+	// pointer.
+	//
+	const char * static_string2_16 = w"Hello, world";
 
-	// or before the identifier to set the default encoding of static string for that pointer:
-
-	const char * `utf-16` static_string;
-
-	// you can use that in function arguments:
-
-	void sth(const char * `utf-16` arg_str);
-
-	// And then calling that with:
-
-	sth("Hello, world!");
-
-	// will pass an UTF-16 static string to the function
+	// Are absolutely the same, but UTF-32
+	//
+	const lchar * static_string_32 = l"Hello, world";
+	const char * static_string2_32 = l"Hello, world";
 	
-	// Similarly the constructor of string<16> is made.
-	// It forces UTF-16 encoding on the default constructor.
+	// UTF-8 also has its optional prefix
+	//
+	const char * static_string_8 = s"Hello, world";
+
+	// w means wide
+	// l means long
+	// s means short
 	
-	// Of course you can cheat it and pass an invalid UTF-16 string to the constructor doing for example:
+	// C has a big problem with the DOS filesystem, where pathes use '\' instead of UNIX's '/' and here
+	// the problem begins, because '\' is used in "" as an escape.
+	// In C you need to do: "C:\\some_dir\\file".
+	// The problem gets on weight if you want to create a regex literal.
+	// A regex: '^C:\\some_dir\\file$' would have to be coded as: '^C:\\\\some_dir\\\\file$'.
+	// It isn't pretty, ok?
+	// C* offers one cool thing: the WYSIWUG (What You See Is What You Get) mechanism, the `` quotes.
+	//
+	const char * win_path = `C:\some_dir\file`;
+	const char * regex = `^C:\\some_dir\\file$`;
+
+	// Isn't this epic?
 	
-	const char * static_a = "ABCDE";
-	const char * `utf-16` static_b = static_a;
-
-	// But here you would receive a warning, because you are trying to assign the default UTF-8 string address
-	// to UTF-16 string pointer, but you can avoid this with:                                             							
-	
-	const char * `utf-16` static_b = `utf-16` static_a;
-
-	// This will tell the compiler that is definitively utf-16 string and the compiler will be quiet.
-
-	string<16> dynamic_a = static_b;
-
-	// That ""cheating"" is necessary in some circumstances and you are free to do that. It's not Rust ;-)
-	
-
-
+	// String prefixes can also be used for WYSIWUG:
+	const char * im_long = l`Wide Doggo`;
 }

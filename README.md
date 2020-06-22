@@ -38,7 +38,7 @@ It is not .cs (from C-Star), because .cs is already occupied by C#.
 - As a love letter from me to Bash, Perl and other scripting languages, the language features a lot of glob extensions which are intended to ease a programmer's job. 
 
 ## Compiler
-Basic C\* compiler is written in D.
+Basic C\* compiler is written in C/C++.
 
 I don't want to create a giant like gcc or clang. Just a simple compiler.
 
