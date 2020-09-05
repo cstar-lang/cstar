@@ -21,21 +21,21 @@ int main()
 	// The compiler will create the UTF-16 variation of this string, pack it to the .text section and
 	// this variable will point to that data.
 	//
-	const wchar * static_string_16 = "Hello, world";
+	const wchar *static_string_16 = "Hello, world";
 
 	// Will do the same that above, but this allows you to assign an UTF-16 static string to the char *
 	// pointer.
 	//
-	const char * static_string2_16 = w"Hello, world";
+	const char *static_string2_16 = w"Hello, world";
 
 	// Are absolutely the same, but UTF-32
 	//
-	const lchar * static_string_32 = l"Hello, world";
-	const char * static_string2_32 = l"Hello, world";
+	const lchar *static_string_32 = l"Hello, world";
+	const char *static_string2_32 = l"Hello, world";
 	
 	// UTF-8 also has its optional prefix
 	//
-	const char * static_string_8 = s"Hello, world";
+	const char *static_string_8 = s"Hello, world";
 
 	// w means wide
 	// l means long
@@ -47,13 +47,13 @@ int main()
 	// The problem gets on weight if you want to create a regex literal.
 	// A regex: '^C:\\some_dir\\file$' would have to be coded as: '^C:\\\\some_dir\\\\file$'.
 	// It isn't pretty, ok?
-	// C* offers one cool thing: the WYSIWUG (What You See Is What You Get) mechanism, the `` quotes.
+	// C* offers one cool thing: the WYSIWYG (What You See Is What You Get) mechanism, the `` quotes.
 	//
-	const char * win_path = `C:\some_dir\file`;
-	const char * regex = `^C:\\some_dir\\file$`;
+	const char *win_path = `C:\some_dir\file`;
+	const char *regex = `^C:\\some_dir\\file$`;
 
-	// Isn't this epic?
+	// Isn't this nice?
 	
 	// String prefixes can also be used for WYSIWUG:
-	const char * im_long = l`Wide Doggo`;
+	const char *im_long = l`Wide Doggo`;
 }

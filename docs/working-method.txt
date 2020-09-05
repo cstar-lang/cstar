@@ -3,10 +3,10 @@ Parser {
 	case type:
 		check if type exists
 		if yes {
-			error "Type undefined"
+			do nothing
 		}
 		else {
-			do nothing
+			error "Type undefined"
 		}
 			
 		get identifier

@@ -1,0 +1,3 @@
+Compile the C* code
+Usage: cgc [options] input..
+

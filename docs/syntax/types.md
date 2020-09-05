@@ -51,3 +51,10 @@ In the other way, unsigned variable doesn't have a division to positive and nega
 | f32			| float
 | f64			| double
 | f128			| long double
+
+## C\* additional basic types
+
+- `str<T>` - Generic type for operations with null terminated constant strings.  
+`T` may be `char`, `wchar`and `lchar`.  
+It containts inline functions for comparing two strigns, getting size, constant pointer and specific character references.  
+`[]`, `==` and `=` operators are redirected.

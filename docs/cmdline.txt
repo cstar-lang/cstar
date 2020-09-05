@@ -1,0 +1,70 @@
+Compiler info:
+ -h 			Print this help,
+ -hh			Print the detailed help,
+ -h <what>		Print help for a specified category,
+ -hl			List help categories,
+ -v			Print the compiler version,
+
+General:
+ -o <file>		Specify an output file (the default is a.out or <source-name>.<ext> if an object or library),
+ -L <dir>		Add a directory to the compiler's library search path,
+ -M <dir>		Add a directory to the compiler's module search path,
+ -Wl,<options,...>	Pass 'options' to the linker,
+ -ld <name>		Specify a linker to use (default is /usr/bin/ld),
+ -O<level>		Optimization level (0,1,2,3),
+ -g			Compile-in debug information (1. note)
+ -emit <type>		Specify a type of an output file (bin, o, so, c, llvm-ir) (2. note),
+ -pic <mode>		Select a behavior for the Position Independent Code mechanism (dynamic,static).
+ -nodce			Turn off the Dead Code Elimination mechanism,
+ -shared		Link the files as a dynamic library,
+ -static		Build-in following libraries statically,
+ -dynamic		Build-in following libraries dynamically (default),
+ -backend <name>	Choose a compiler backend (3. note),
+ -cc <name>		Choose a C compiler when using the C backend (default: cc),
+ -Wc,<options,...>	Pass 'options' to the C compiler,
+ -march=<arch>		Choose the target architecture,
+ -march-list		Print a list of supported targets,
+ -m32			Build 32-bit code,
+ -m64			Build 64-bit code,
+
+Module using:
+ -moduse <modules...>	Specify modules to be automatically imported,
+ -no-mobj-lookup	Don't look for module object files (.o,.so) while trying to find a "route" to a function or variable.
+ -no-mod-codebuild	Don't even try to build the module code ownself, even if a module object file was not found. (4. note)
+ -mobj-ext-priority	Specify the priority for module object file extensions looking for (recognizable: .so, .o, .dll, .a). Delimite with a comma.
+
+Module building:
+ -module		Build an input file as a module. (5. note),
+ -mo <file>		Specify a name for an output module (default <source-name>.gcm),
+ -mthrow-exportable	Don't keep non-generic exportable code in a module file,
+ -mdecompile		Decompile the module file into a C* source file (6. note).
+
+Module object file building:
+
+Notes:
+ 1. Debug information like C* code lines may be corrupted in the cc backend.
+
+ 2. 'so' type's extension varies between executable file formats of target architectures:
+    PE 		- .dll
+    Mach-O	- .dylib
+    ELF		- .so
+
+ 3. Available backends are: native, cc, llc.
+    At the moment, only i386 and x86_64 architectures are supported by the native backend.
+    With the cc (C Compiler) and llc (llvm compiler) backend you are able to build C* code on every architecture supported by the backend compilers.
+    On the other hand the native backend is generally the fastest.
+    'native' is default on x86_64 and i386 targets.
+    When using 'cc' backend, the compiler compiles the code to C and then to machine code using a C compiler,
+    and when using 'llc', the code is compiled to llvm-ir and then to machine code using llvm's llc.
+    'cc' and 'llc' backends are optional while building the compiler and to use them finally, they must be built in.
+
+ 4. -no-mobj-lookup and -no-mod-codebuild are mutually exclusive.
+
+ 5. Multiple modules cannot be exported into one .gcm file.
+    The compiler will print an error if you will try so.
+
+ 6. If a module had some code thrown, a decompiled source will only have externs of thrown functions or variables.
+
+License:
+ The C* compiler is licensed with GPLv3 license.
+ The author is Grzegorz Kociołek.

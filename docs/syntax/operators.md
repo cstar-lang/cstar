@@ -41,7 +41,6 @@ For example:
 | ~		| binary negate		| ~x		| ~u8(2) = 253
 | +		| positive value	| +x		| +2 = 2
 | -		| negative value	| -x		| -2 = -2
-| @		| absolute		| @x		| `@-2 = 2` and `@2 = 2`
 
 ### Comparisons
 | operator	| name			| syntax	| program behavior
@@ -54,4 +53,5 @@ For example:
 | <		| lesser		| x < y		| 1 < 2 = 1
 | &&		| truth and		| x && y	| 1 && 0 = 0
 | \|\|		| truth or		| x \|\| y	| 1 \|\| 0 = 1
+| \<=\>		| two-way comparison    | x \<=\> y     | 4 \<=\> 10 = -1
 
