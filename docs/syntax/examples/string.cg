@@ -1,6 +1,6 @@
 use string; // Tells the compiler to use module 'string'
 
-type string is string<8>;	 	// Makes that, in the generic context string<*>, string<8> is default
+type string = string<8>;	 	// Makes that, in the generic context string<*>, string<8> is default
 					// string<8> is default in the language anyway, but this line in shown here as an example
 
 // While reading the above line you could think about C's typedef.
@@ -30,7 +30,7 @@ int main()
 
 	// Are absolutely the same, but UTF-32
 	//
-	const lchar *static_string_32 = l"Hello, world";
+	const lchar *static_string_32 = "Hello, world";
 	const char *static_string2_32 = l"Hello, world";
 	
 	// UTF-8 also has its optional prefix
@@ -54,6 +54,57 @@ int main()
 
 	// Isn't this nice?
 	
-	// String prefixes can also be used for WYSIWUG:
+	// String prefixes can also be used for WYSIWYG:
 	const char *im_long = l`Wide Doggo`;
+
+	// When it comes to multi-line strings, you can do it in two ways:
+	const char *ml1 = "abc
+d
+e
+f"
+	// ^ This will create a string with 'abc\nd\ne\nf' as the content
+	// Maybe you wish to align your lines.
+	// To do it, there exists a 'A' string prefix.
+	// 'A' makes that every line starts after the last whitespace.
+	// Example:
+	const char *ml2 = A"a
+					    b
+					    c
+					    d
+					    e";
+	// And this string is equal to "a\nb\nc\nd".
+	// You can also without any problem specify the string's char width with any of w,l,s prefixes.
+	// It is not said where it should be placed. May be after or before the 'A' specifier.
+	// It's good to mention that in C* the `char width prefixes` are lower-case.
+	// Each other prefixes are upper-case.
+	const char *ml4 = Al"a
+					     b
+						 c
+						 d";
+	// Will work as you may guess.
+	
+	// To include a leading whitespace in a line when 'A' prefix is used you have to put '\' before a space.
+	// Example:
+	const char *ml5 = Al"a
+		                \    b
+						\    c"
+						
+	// The '\' character at the end of the string line means to concatenate
+	// the lower line with the current one without putting '\n' between them.
+	const char *ml6 = A"a \
+					    b
+					    c
+					    d";
+
+	// Trailing whitespace are ignored in multiline strings.
+	// To include it you have to put `\` before a whitespace.
+	const char *ml7 = A"a
+						b\ \ \
+						c"
+
+	// Warning:
+	//   You can't use `\` in `` (absolute) strings!
+	//   It is treated absolutely so like `\\` in "" strings.
 }
+
+

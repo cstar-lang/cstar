@@ -5,5 +5,4 @@ void main(const std.argv &args)
 {
 	std.string str = "ABC";
 
-
 }

@@ -37,7 +37,7 @@ In the other way, unsigned variable doesn't have a division to positive and nega
 | u64			| unsigned long long
 | u128			| unsigned __int128
 | u0			| void
-| size_t        | unsigned long
+| size_t        | unsigned long long
 
 ## Basic C floating-point types
 | name			| bit size

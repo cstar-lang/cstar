@@ -1,7 +1,7 @@
 # List of C\* operators
 
 ## Note
-> Code in examples and the `program behavior` column is pseudo-code ~~code for boomers~~ used for presentation, not C\* itself.
+> Code in examples and the `program behavior` column is pseudo-code used for presentation, not C\* itself.
 See pseudo-code.md for information about the pseudo-code used in the documentation.
 
 > Some behavior needs to present a value with specific binary size, so ux is its size, where x is a count of bits in the variable.
@@ -53,5 +53,4 @@ For example:
 | <		| lesser		| x < y		| 1 < 2 = 1
 | &&		| truth and		| x && y	| 1 && 0 = 0
 | \|\|		| truth or		| x \|\| y	| 1 \|\| 0 = 1
-| \<=\>		| two-way comparison    | x \<=\> y     | 4 \<=\> 10 = -1
-
+| \<=\>		| three-way comparison  | x \<=\> y     | 4 \<=\> 10 = -1

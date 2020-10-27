@@ -1,0 +1,37 @@
+struct dyn_struct {
+	int t;
+	size_t size;
+
+	char data[];
+
+	inline size_t size() = 
+	    @offsetof(dyn_struct, data) + .size;
+
+	alias sizeof = size;
+};
+
+int main()
+{
+	int n = ...;
+
+	// 'r' before a string means that the string is not null-terminated.
+	dyn_struct arr[] = {
+		{ t: 32, data: { r"ABCDEFGHIJ", 0x1 },      size: .data.sizeof() },
+		{ t: 64, data: { r"0123456789abcdefghij" }, size: .data.sizeof() }
+	};
+
+	foo(arr[n]);
+
+	// Guess which object will be passed as an argument.
+	// In C this statement would be invalid, because the struct has only compile-time known size.
+	// But here, in C*, as we have dynamic type sizes, following operation will be done after unwrapping
+	// everything (target of sizeof alias and .size() inline):
+	//
+	// void *addr = arr;
+	// for (ulong i = 0; i < n; i++) {
+	//     addr += ((dyn_struct*)addr)->size;
+	// }
+	// foo(*(dyn_struct*)addr)
+}
+
+
