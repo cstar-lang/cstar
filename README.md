@@ -1,3 +1,3 @@
 # C\*
 
-C++ replacement
+An alternative for C++
